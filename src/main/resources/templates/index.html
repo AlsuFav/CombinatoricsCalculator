@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Комбинаторика</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<style>
+    #calculation-type-buttons button {
+        margin: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid #f9f9f9;
+        background-color: #f9f9f9;
+        cursor: pointer;
+        border-radius: 12px;
+    }
+
+    #calculation-type-buttons button.active {
+        background-color: #61c6e4;
+        color: white;
+        border-color: #7bcde6;
+        border-radius: 12px;
+    }
+
+    #calculation-type-buttons button:hover {
+        background-color: #7bcde6;
+        color: white;
+        border-radius: 12px;
+    }
+
+    #formulas img {
+        margin-top: 20px;
+        width: 100%;
+        max-width: 250px;
+        display: block;
+    }
+</style>
+
+<h2>Комбинаторные вычисления</h2>
+<form action="/calculate" method="post" id="calculateForm">
+    <label>Выберите тип вычислений:</label>
+    <div id="calculation-type-buttons">
+        <button type="button" data-type="permutation" class="active">Перестановки</button>
+        <button type="button" data-type="arrangement">Размещения</button>
+        <button type="button" data-type="combination">Сочетания</button>
+    </div>
+
+    <!-- Скрытое поле для выбранного типа -->
+    <input type="hidden" name="type" id="type" value="permutation">
+
+    <label for="repetition">С повторением:</label>
+    <input type="checkbox" name="repetition" id="repetition">
+
+    <div id="formulas">
+        <img src="/images/permutation_without_repetition.png" alt="Перестановки без повторений" id="formula-permutation-without-repetition" style="display: none;">
+        <img src="/images/permutation_with_repetition.png" alt="Перестановки с повторениями" id="formula-permutation-with-repetition" style="display: none;">
+
+        <img src="/images/arrangement_without_repetition.png" alt="Размещения без повторений" id="formula-arrangement-without-repetition" style="display: none;">
+        <img src="/images/arrangement_with_repetition.png" alt="Размещения с повторениями" id="formula-arrangement-with-repetition" style="display: none;">
+
+        <img src="/images/combination_without_repetition.png" alt="Сочетания без повторений" id="formula-combination-without-repetition" style="display: none;">
+        <img src="/images/combination_with_repetition.png" alt="Сочетания с повторениями" id="formula-combination-with-repetition" style="display: none;">
+    </div>
+
+    <div id="n-field">
+        <label for="n">n:</label>
+        <input type="number" name="n" id="n" required min="1">
+    </div>
+
+    <div id="m-field" style="display: none;">
+        <label for="m">m:</label>
+        <input type="number" name="m" id="m" min="1">
+    </div>
+
+    <div id="repetitions-field" style="display: none;">
+        <label for="repetitions">Повторения (через запятую):</label>
+        <input type="text" name="repetitions" id="repetitions" placeholder="Пример: 2,2,1">
+    </div>
+
+    <button type="submit">Вычислить</button>
+
+    <div style="color: #024250;" th:if="${combinatoricsErrorMessage != null}">
+        <p th:text="${combinatoricsErrorMessage}"></p>
+    </div>
+</form>
+
+
+<script>
+    const typeButtons = document.querySelectorAll("#calculation-type-buttons button");
+    const typeInput = document.getElementById("type");
+    const repetitionCheckbox = document.getElementById("repetition");
+    const mField = document.getElementById("m-field");
+    const repetitionsField = document.getElementById("repetitions-field");
+    const formulas = {
+        permutation: {
+            withRepetition: document.getElementById("formula-permutation-with-repetition"),
+            withoutRepetition: document.getElementById("formula-permutation-without-repetition")
+        },
+        arrangement: {
+            withRepetition: document.getElementById("formula-arrangement-with-repetition"),
+            withoutRepetition: document.getElementById("formula-arrangement-without-repetition")
+        },
+        combination: {
+            withRepetition: document.getElementById("formula-combination-with-repetition"),
+            withoutRepetition: document.getElementById("formula-combination-without-repetition")
+        }
+    };
+
+    // Обновление видимости полей и формул
+    function updateFields() {
+        const type = typeInput.value;
+        const isRepetition = repetitionCheckbox.checked;
+
+        // Показывать m только для размещений и сочетаний
+        mField.style.display = (type === "arrangement" || type === "combination") ? "block" : "none";
+
+        // Показывать повторения только для перестановок и размещений с повторениями
+        repetitionsField.style.display = isRepetition && type === "permutation"
+            ? "block"
+            : "none";
+
+        // Скрываем все формулы
+        Object.values(formulas).forEach(formulaSet => {
+            Object.values(formulaSet).forEach(formula => formula.style.display = "none");
+        });
+
+        // Показываем нужную формулу в зависимости от типа и флажка с повторениями
+        const selectedFormulas = formulas[type];
+        if (selectedFormulas) {
+            const formulaKey = isRepetition ? "withRepetition" : "withoutRepetition";
+            const formulaToShow = selectedFormulas[formulaKey];
+            if (formulaToShow) {
+                formulaToShow.style.display = "block";
+            }
+        }
+    }
+
+    // Установка типа при нажатии кнопки
+    typeButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            typeInput.value = this.dataset.type;
+            typeButtons.forEach(btn => btn.classList.remove("active")); // Удалить активное состояние
+            this.classList.add("active"); // Добавить активное состояние для текущей кнопки
+            updateFields(); // Обновить видимость полей и формул
+        });
+    });
+
+    // Привязываем обновление к изменению флажка "С повторением"
+    repetitionCheckbox.addEventListener("change", updateFields);
+
+    // Инициализация
+    updateFields();
+</script>
+
+<br>
+
+<h2>Вероятности (Урновая модель)</h2>
+
+<!-- Вероятность, что все извлеченные предметы меченые -->
+<h3>Вероятность того, что все извлеченные предметы меченые</h3>
+<img src="/images/urn_all_marked.png" alt="Все извлеченные предметы меченые">
+<form action="/urn-all-marked" method="post" id="urnAllMarkedForm">
+    <label for="n-all">Общее количество предметов (n):</label>
+    <input type="number" name="n" id="n-all" required min="2">
+    <br>
+
+    <label for="m-all">Количество меченых предметов (m):</label>
+    <input type="number" name="m" id="m-all" required min="1">
+    <br>
+
+    <label for="k-all">Количество извлечений (k):</label>
+    <input type="number" name="k" id="k-all" required min="1">
+    <br>
+
+    <button type="submit">Вычислить</button>
+
+    <div style="color: #024250;" th:if="${urnAllMarkedErrorMessage != null}">
+        <p th:text="${urnAllMarkedErrorMessage}"></p>
+    </div>
+</form>
+
+<!-- Вероятность, что среди извлеченных будет ровно r меченых -->
+<h3>Вероятность того, что среди извлеченных предметов будет ровно r меченых</h3>
+<img src="/images/urn_specific_marked.png" alt="Cреди извлеченных предметов будет ровно r меченых">
+<form action="/urn-specific-marked" method="post" id="urnSpecificMarkedForm">
+    <label for="n-specific">Общее количество предметов (n):</label>
+    <input type="number" name="n" id="n-specific" required min="2">
+    <br>
+
+    <label for="m-specific">Количество меченых предметов (m):</label>
+    <input type="number" name="m" id="m-specific" required min="1">
+    <br>
+
+    <label for="k-specific">Количество извлечений (k):</label>
+    <input type="number" name="k" id="k-specific" required min="1">
+    <br>
+
+    <label for="r-specific">Количество меченых в извлечениях (r):</label>
+    <input type="number" name="r" id="r-specific" required min="1">
+    <br>
+
+    <button type="submit">Вычислить</button>
+
+    <div style="color: #024250;" th:if="${urnSpecificMarkedErrorMessage != null}">
+        <p th:text="${urnSpecificMarkedErrorMessage}"></p>
+    </div>
+</form>
+</body>
+</html>

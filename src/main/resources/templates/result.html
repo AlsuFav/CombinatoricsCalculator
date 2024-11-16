@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Результат вычислений</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<h1>Результат</h1>
+
+<!-- Общий блок для вывода результата -->
+<p th:if="${resultType == 'urn-all-marked'}">
+    Вероятность того, что все извлеченные предметы окажутся мечеными:
+    <strong th:text="${result}"></strong>
+</p>
+
+<p th:if="${resultType == 'urn-specific-marked'}">
+    Вероятность того, что среди извлеченных предметов будет ровно
+    <strong th:text="${r}"></strong> меченых:
+    <strong th:text="${result}"></strong>
+</p>
+
+<p th:if="${resultType == 'combinatorics'}">
+    Результат комбинаторного вычисления: <strong th:text="${result}"></strong>
+</p>
+
+
+<form action="/" method="get">
+    <button type="submit">Назад</button>
+</form>
+
+
+</body>
+</html>
