@@ -11,8 +11,8 @@
     <groupId>ru.fav</groupId>
     <artifactId>combinatorics</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Calculator</name>
-    <description>Calculator</description>
+    <name>CombinatoricsCalculator</name>
+    <description>App for probability and combinatorics calculations</description>
     <url/>
     <licenses>
         <license/>
