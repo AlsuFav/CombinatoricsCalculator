@@ -47,7 +47,7 @@
         <button type="button" data-type="combination">Сочетания</button>
     </div>
 
-    <!-- Скрытое поле для выбранного типа -->
+
     <input type="hidden" name="type" id="type" value="permutation">
 
     <label for="repetition">С повторением:</label>
@@ -108,25 +108,25 @@
         }
     };
 
-    // Обновление видимости полей и формул
+
     function updateFields() {
         const type = typeInput.value;
         const isRepetition = repetitionCheckbox.checked;
 
-        // Показывать m только для размещений и сочетаний
+
         mField.style.display = (type === "arrangement" || type === "combination") ? "block" : "none";
 
-        // Показывать повторения только для перестановок и размещений с повторениями
+
         repetitionsField.style.display = isRepetition && type === "permutation"
             ? "block"
             : "none";
 
-        // Скрываем все формулы
+
         Object.values(formulas).forEach(formulaSet => {
             Object.values(formulaSet).forEach(formula => formula.style.display = "none");
         });
 
-        // Показываем нужную формулу в зависимости от типа и флажка с повторениями
+
         const selectedFormulas = formulas[type];
         if (selectedFormulas) {
             const formulaKey = isRepetition ? "withRepetition" : "withoutRepetition";
@@ -137,20 +137,20 @@
         }
     }
 
-    // Установка типа при нажатии кнопки
+
     typeButtons.forEach(button => {
         button.addEventListener("click", function () {
             typeInput.value = this.dataset.type;
-            typeButtons.forEach(btn => btn.classList.remove("active")); // Удалить активное состояние
-            this.classList.add("active"); // Добавить активное состояние для текущей кнопки
-            updateFields(); // Обновить видимость полей и формул
+            typeButtons.forEach(btn => btn.classList.remove("active"));
+            this.classList.add("active");
+            updateFields();
         });
     });
 
-    // Привязываем обновление к изменению флажка "С повторением"
+
     repetitionCheckbox.addEventListener("change", updateFields);
 
-    // Инициализация
+
     updateFields();
 </script>
 
@@ -158,7 +158,7 @@
 
 <h2>Вероятности (Урновая модель)</h2>
 
-<!-- Вероятность, что все извлеченные предметы меченые -->
+
 <h3>Вероятность того, что все извлеченные предметы меченые</h3>
 <img src="/images/urn_all_marked.png" alt="Все извлеченные предметы меченые">
 <form action="/urn-all-marked" method="post" id="urnAllMarkedForm">
@@ -181,7 +181,7 @@
     </div>
 </form>
 
-<!-- Вероятность, что среди извлеченных будет ровно r меченых -->
+
 <h3>Вероятность того, что среди извлеченных предметов будет ровно r меченых</h3>
 <img src="/images/urn_specific_marked.png" alt="Cреди извлеченных предметов будет ровно r меченых">
 <form action="/urn-specific-marked" method="post" id="urnSpecificMarkedForm">
@@ -198,7 +198,7 @@
     <br>
 
     <label for="r-specific">Количество меченых в извлечениях (r):</label>
-    <input type="number" name="r" id="r-specific" required min="1">
+    <input type="number" name="r" id="r-specific" required min="0">
     <br>
 
     <button type="submit">Вычислить</button>

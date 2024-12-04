@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <title>Результат вычислений</title>
     <link rel="stylesheet" href="/css/styles.css">
@@ -7,7 +7,7 @@
 <body>
 <h1>Результат</h1>
 
-<!-- Общий блок для вывода результата -->
+
 <p th:if="${resultType == 'urn-all-marked'}">
     Вероятность того, что все извлеченные предметы окажутся мечеными:
     <strong th:text="${result}"></strong>

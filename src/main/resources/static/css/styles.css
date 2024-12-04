@@ -6,39 +6,38 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Geneva', sans-serif;
-    font-weight: 700; /* жирный для заголовков */
+    font-weight: 700;
 }
 
 p, span, a, li, button {
     font-family: 'Geneva', sans-serif;
 }
 
-/* Для полей ввода */
+
 input[type="text"], input[type="number"], textarea {
-    border-radius: 12px; /* Скругленные углы */
-    padding: 10px; /* Отступы внутри поля ввода */
-    border: 1px solid #f9f9f9; /* Цвет границы, как у кнопок */
-    background-color: #f9f9f9; /* Цвет фона поля ввода */
-    font-size: 16px; /* Размер шрифта */
-    box-sizing: border-box; /* Чтобы padding не выходил за пределы поля */
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid #f9f9f9;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
-/* Для кнопки submit */
 button[type="submit"] {
-    border-radius: 12px; /* Скругленные углы */
-    padding: 10px 20px; /* Отступы внутри кнопки */
-    border: 1px solid #f9f9f9; /* Цвет границы кнопки */
-    background-color: #f9f9f9; /* Цвет фона кнопки */
-    color: #333; /* Цвет текста */
-    font-size: 16px; /* Размер шрифта */
-    cursor: pointer; /* Указатель мыши */
-    box-sizing: border-box; /* Чтобы padding не выходил за пределы кнопки */
+    border-radius: 12px;
+    padding: 10px 20px;
+    border: 1px solid #f9f9f9;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
 }
 
 button[type="submit"]:hover {
-    background-color: #61c6e4; /* Цвет фона при наведении */
-    color: white; /* Цвет текста при наведении */
-    border-color: #7bcde6; /* Цвет границы при наведении */
+    background-color: #61c6e4;
+    color: white;
+    border-color: #7bcde6;
 }
 
 input[type="checkbox"] {

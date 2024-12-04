@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.fav.combinatorics.services.CombinatoricsService;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 
@@ -18,13 +19,12 @@ public class CombinatoricsController {
     @Autowired
     private CombinatoricsService combinatoricsService;
 
-    // Главная страница
     @GetMapping("/")
     public String home() {
         return "index";
     }
 
-    // Расчет для всех меченых (урновая модель)
+
     @PostMapping("/urn-all-marked")
     public String urnAllMarked(
             @RequestParam int n,
@@ -57,7 +57,7 @@ public class CombinatoricsController {
         return "result";
     }
 
-    // Расчет для r меченых (урновая модель)
+
     @PostMapping("/urn-specific-marked")
     public String urnSpecificMarked(
             @RequestParam int n,
@@ -74,8 +74,10 @@ public class CombinatoricsController {
             urnSpecificMarkedErrorMessage = "Должно выполняться: 1 <= m <= n.";
         } else if (k < 1 || k >= m) {
             urnSpecificMarkedErrorMessage = "Должно выполняться: 1 <= k < m.";
-        } else if (r < 1 || r > k) {
-            urnSpecificMarkedErrorMessage = "Должно выполняться: 1 <= r <= k.";
+        } else if (r < 0 || r > k) {
+            urnSpecificMarkedErrorMessage = "Должно выполняться: 0 <= r <= k.";
+        } else if (k - r > n - m) {
+            urnSpecificMarkedErrorMessage = "Должно выполняться: k - r <= m - m.";
         }
 
         model.addAttribute("urnSpecificMarkedErrorMessage", urnSpecificMarkedErrorMessage);
@@ -95,7 +97,7 @@ public class CombinatoricsController {
         return "result";
     }
 
-    // Комбинаторные вычисления
+
     @PostMapping("/calculate")
     public String calculate(
             @RequestParam String type,
@@ -105,7 +107,7 @@ public class CombinatoricsController {
             @RequestParam(required = false) int[] repetitions,
             Model model) {
 
-        // Проверка корректности введенных данных
+
         String combinatoricsErrorMessage = null;
 
         if (n < 1) {
@@ -126,9 +128,12 @@ public class CombinatoricsController {
                 break;
 
             case "arrangement":
-                if (m < 1 || m > n) {
-                combinatoricsErrorMessage = "Для размещений должно выполняться: 1 <= m <= n.";
-                }
+                System.out.println(repetition);
+                if (repetition && (1 > n || 1 > m)) {
+                combinatoricsErrorMessage = "Для размещений c повторениями должно выполняться: 1 <= n и 1 <= m.";
+                } else if (!repetition && (m < 1 || m > n)) {
+                combinatoricsErrorMessage = "Для размещений без повторений должно выполняться: 1 <= m <= n.";
+            }
             break;
 
             case "combination":
@@ -153,11 +158,11 @@ public class CombinatoricsController {
             model.addAttribute("n", n);
             model.addAttribute("m", m);
             model.addAttribute("repetitions", repetitions != null ? String.join(",", Arrays.stream(repetitions).mapToObj(String::valueOf).toArray(String[]::new)) : "");
-            return "index"; // Возвращаем исходную форму
+            return "index";
         }
 
-        // Если ошибок нет, выполняем расчет
-        long result = switch (type) {
+
+        BigInteger result = switch (type) {
             case "permutation" -> repetition
                     ? combinatoricsService.permutationsWithRepetition(n, repetitions)
                     : combinatoricsService.permutations(n);
@@ -167,7 +172,7 @@ public class CombinatoricsController {
             case "combination" -> repetition
                     ? combinatoricsService.combinationsWithRepetition(n, m)
                     : combinatoricsService.combinations(n, m);
-            default -> 0;
+            default -> BigInteger.valueOf(0);
         };
 
         model.addAttribute("resultType", "combinatorics");

@@ -2,64 +2,66 @@ package ru.fav.combinatorics.services;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+
 
 @Service
 public class CombinatoricsService {
 
-    // Факториал числа
-    private long factorial(int n) {
-        long result = 1;
+
+    private BigInteger factorial(int n) {
+        BigInteger result = BigInteger.valueOf(1);
         for (int i = 2; i <= n; i++) {
-            result *= i;
+            result = result.multiply(BigInteger.valueOf(i));
         }
         return result;
     }
 
-    // Перестановки без повторений
-    public long permutations(int n) {
+
+    public BigInteger permutations(int n) {
         return factorial(n);
     }
 
-    // Размещения без повторений
-    public long arrangements(int n, int k) {
-        return factorial(n) / (factorial(n - k));
+
+    public BigInteger arrangements(int n, int k) {
+        return factorial(n).divide(factorial(n - k));
     }
 
-    // Сочетания без повторений
-    public long combinations(int n, int k) {
-        return factorial(n) / (factorial(k) * (factorial(n - k)));
+
+    public BigInteger combinations(int n, int k) {
+        return factorial(n).divide(factorial(k).multiply(factorial(n - k)));
     }
 
-    // Перестановки с повторениями
-    public long permutationsWithRepetition(int n, int[] repetitions) {
-        long denominator = 1;
+
+    public BigInteger permutationsWithRepetition(int n, int[] repetitions) {
+        BigInteger denominator = BigInteger.valueOf(1);
         for (int r : repetitions) {
-            denominator *= factorial(r);
+            denominator = denominator.multiply(factorial(r));
         }
-        return factorial(n) / denominator;
+        return factorial(n).divide(denominator);
     }
 
-    // Размещения с повторениями
-    public long arrangementsWithRepetition(int n, int k) {
-        return (long) Math.pow(n, k);
+
+    public BigInteger arrangementsWithRepetition(int n, int k) {
+        return BigInteger.valueOf((long) Math.pow(n, k));
     }
 
-    // Сочетания с повторениями
-    public long combinationsWithRepetition(int n, int k) {
+
+    public BigInteger combinationsWithRepetition(int n, int k) {
         return combinations(n + k - 1, k);
     }
 
-    // Урновая модель: вероятность всех меченых P(A) = C(m, k) / C(n, k)
+
     public double urnAllMarked(int n, int m, int k) {
-        double numerator = combinations(m, k);
-        double denominator = combinations(n, k);
-        return numerator / denominator;
+        double numerator = combinations(m, k).doubleValue();
+        double denominator = combinations(n, k).doubleValue();
+        return numerator/ denominator;
     }
 
-    // Урновая модель: вероятность r меченых P(A) = C(m, r) * C(n-m, k-r) / C(n, k)
+
     public double urnSpecificMarked(int n, int m, int k, int r) {
-        double numerator = combinations(m, r) * combinations(n - m, k - r);
-        double denominator = combinations(n, k);
+        double numerator = combinations(m, r).multiply(combinations(n - m, k - r)).doubleValue();
+        double denominator = combinations(n, k).doubleValue();
         return numerator / denominator;
     }
 
